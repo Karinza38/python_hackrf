@@ -1,10 +1,10 @@
-from os import getenv, environ
 import subprocess
 import sys
+from os import environ, getenv
 
-from setuptools import setup, Extension, find_packages
-from setuptools.command.build_ext import build_ext
 import numpy
+from setuptools import Extension, find_packages, setup
+from setuptools.command.build_ext import build_ext
 
 libraries = ['hackrf']
 
@@ -18,23 +18,22 @@ PLATFORM = sys.platform
 if getenv('LIBLINK'):
     PLATFORM = 'android'
 
-
 if PLATFORM != 'android':
-    SETUP_REQUIRES.append('cython==0.29.36')
-    INSTALL_REQUIRES.append('cython==0.29.36')
+    SETUP_REQUIRES.append('Cython==0.29.37')
+    INSTALL_REQUIRES.append('Cython==0.29.37')
 
-    SETUP_REQUIRES.append('numpy>=1.26')
-    INSTALL_REQUIRES.append('numpy>=1.26')
+    SETUP_REQUIRES.append('numpy')
+    INSTALL_REQUIRES.append('numpy')
 
     cflags = environ.get('CFLAGS', '')
     ldflags = environ.get('LDFLAGS', '')
 
-    if PLATFORM in ('linux', 'darwin'):
+    if PLATFORM in {'linux', 'darwin'}:
         if environ.get('PYTHON_HACKRF_CFLAGS', None) is None:
             try:
                 new_cflags = subprocess.check_output(['pkg-config', '--cflags', 'libhackrf']).decode('utf-8').strip()
             except Exception:
-                new_cflags = ''
+                raise RuntimeError('Unable to run pkg-config. Set cflags manually export PYTHON_HACKRF_CFLAGS=') from None
         else:
             new_cflags = environ.get('PYTHON_HACKRF_CFLAGS', '')
 
@@ -42,20 +41,12 @@ if PLATFORM != 'android':
             try:
                 new_ldflags = subprocess.check_output(['pkg-config', '--libs', 'libhackrf']).decode('utf-8').strip()
             except Exception:
-                new_ldflags = ''
+                raise RuntimeError('Unable to run pkg-config. Set libs manually export PYTHON_HACKRF_LDFLAGS=') from None
         else:
             new_ldflags = environ.get('PYTHON_HACKRF_LDFLAGS', '')
 
     elif PLATFORM == 'win32':
-        if environ.get('PYTHON_HACKRF_CFLAGS', None) is None:
-            new_cflags = '/I"C:\\Program Files\\Hackrf\\include"'
-        else:
-            new_cflags = environ.get('PYTHON_HACKRF_CFLAGS', '')
-
-        if environ.get('PYTHON_HACKRF_LDFLAGS', None) is None:
-            new_ldflags = '/LIBPATH"C:\\Program Files\\Hackrf\\lib"'
-        else:
-            new_ldflags = environ.get('PYTHON_HACKRF_LDFLAGS', '')
+        pass
 
     environ['CFLAGS'] = f'{cflags} {new_cflags}'.strip()
     environ['LDFLAGS'] = f'{ldflags} {new_ldflags}'.strip()
@@ -87,7 +78,7 @@ setup(
             sources=['python_hackrf/pyhackrf_tools/pyhackrf_transfer.pyx'],
             include_dirs=['python_hackrf/pyhackrf_tools', numpy.get_include()],
             extra_compile_args=['-w'],
-        )
+        ),
     ],
     packages=find_packages(),
     package_dir={'': '.'},

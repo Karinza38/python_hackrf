@@ -16,8 +16,8 @@ export PYTHON_HACKRF_LDFLAGS=path_to_hackrf.(so, dylib, dll)
 ```
 
 ## Requirements:
-* Cython==0.29.36
-* Numpy>=1.26
+* Cython==0.29.37
+* Numpy>=2.2.1
 * Scipy (optional, for faster work)
 * pyFFTW (optional, for faster work)
 * pyjnius and android (only for android)
@@ -156,3 +156,11 @@ pythonforandroidrecipes/
 You can see a basic example of working with python_hackrf in [this](https://pysdr.org/content/hackrf.html) tutorial.
 
 Please use the original hackrf documentation
+
+
+## Notes
+You can use FileQueue to receive data in pyhackrf_sweep. This will reduce the load on RAM and can work even on weak devices.
+
+For pyhackrf_transfer, FileBuffer has been implemented, which will allow you to more conveniently receive and send iq data from sdr.
+
+you can find the structure you need in the utils module.

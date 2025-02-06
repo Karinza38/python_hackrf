@@ -1,6 +1,6 @@
 [project]
 name = "python_hackrf"
-version = "1.2.1"
+version = "1.2.7"
 authors = [
   {name="Leonid Gvozdev", email="leo.gvozdev.dev@gmail.com"},
 ]
@@ -16,6 +16,9 @@ classifiers = [
     "Operating System :: MacOS :: MacOS X",
     "Operating System :: Microsoft :: Windows",
 ]
+dependencies = [
+    "numpy",
+]
 
 [project.urls]
 "Homepage" = "https://github.com/GvozdevLeonid/python_hackrf"
@@ -23,6 +26,7 @@ classifiers = [
 
 [build-system]
 requires = [
+    "Cython==0.29.37",
     "setuptools",
     "wheel",
     "numpy",
